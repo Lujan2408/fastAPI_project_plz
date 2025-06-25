@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from models.customer import Customer_create, Customer
 from models.transaction import Transaction, Invoice
-from db import SessionDependency
+from db import SessionDependency, create_db_and_tables
 
-app = FastAPI()
+app = FastAPI(lifespan=create_db_and_tables)
 
 #  This is a list of customers supposed to be a database
 db_customers: list[Customer] = []
