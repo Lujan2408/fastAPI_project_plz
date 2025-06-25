@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from models.customer import Customer
 
 app = FastAPI()
 
@@ -24,3 +25,7 @@ async def get_time(iso_code: str):
   timezone_str = country_timezones.get(iso)
   tz = ZoneInfo(timezone_str)
   return {"Time": datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")}
+
+@app.post("/customers")
+async def create_customer(customer_data: Customer): 
+  return customer_data
