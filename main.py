@@ -1,11 +1,14 @@
 from fastapi import FastAPI
 from models.customer import Customer_create, Customer
 from models.transaction import Transaction, Invoice
+from db import SessionDependency
 
 app = FastAPI()
 
 #  This is a list of customers supposed to be a database
 db_customers: list[Customer] = []
+
+# Get methods ⬇️
 
 @app.get("/customers", response_model=list[Customer])
 async def list_customers():
@@ -16,8 +19,10 @@ async def get_customer_by_id(id: int):
   customer = next((customer for customer in db_customers if customer.id == id), None)
   return customer
 
+# Post methods ⬇️
+
 @app.post("/customers", response_model=Customer)
-async def create_customer(customer_data: Customer_create): 
+async def create_customer(customer_data: Customer_create, session: SessionDependency): 
   # Validate the customer data using the Customer model, inside we pass a dictionary
   customer = Customer.model_validate(customer_data.model_dump())
   #  Assumming that this is a database, we need to increment the id
