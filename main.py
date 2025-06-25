@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from models.customer import Customer
+from models.customer import Customer_create, Customer
 from models.transaction import Transaction, Invoice
 
 app = FastAPI()
@@ -8,9 +8,17 @@ app = FastAPI()
 async def root():
   return {"message": "Hello"}
 
-@app.post("/customers")
-async def create_customer(customer_data: Customer): 
-  return customer_data
+#  This is a list of customers supposed to be a database
+db_customers: list[Customer] = []
+
+@app.post("/customers", response_model=Customer)
+async def create_customer(customer_data: Customer_create): 
+  # Validate the customer data using the Customer model, inside we pass a dictionary
+  customer = Customer.model_validate(customer_data.model_dump())
+  #  Assumming that this is a database, we need to increment the id
+  customer.id = len(db_customers) 
+  db_customers.append(customer) # append allows us to add the customer to the database
+  return customer
 
 @app.post("/transactions")
 async def create_transaction(transaction_data: Transaction):  
