@@ -4,12 +4,12 @@ from models.transaction import Transaction, Invoice
 
 app = FastAPI()
 
-@app.get("/")
-async def root():
-  return {"message": "Hello"}
-
 #  This is a list of customers supposed to be a database
 db_customers: list[Customer] = []
+
+@app.get("/customers", response_model=list[Customer])
+async def list_customers():
+  return db_customers
 
 @app.post("/customers", response_model=Customer)
 async def create_customer(customer_data: Customer_create): 
