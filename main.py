@@ -11,6 +11,11 @@ db_customers: list[Customer] = []
 async def list_customers():
   return db_customers
 
+@app.get("/customers/{customer_id}", response_model=Customer)
+async def get_customer_by_id(id: int):
+  customer = next((customer for customer in db_customers if customer.id == id), None)
+  return customer
+
 @app.post("/customers", response_model=Customer)
 async def create_customer(customer_data: Customer_create): 
   # Validate the customer data using the Customer model, inside we pass a dictionary
