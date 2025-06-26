@@ -1,22 +1,17 @@
-from fastapi import FastAPI
-from models.customer import Customer_create, Customer, Customer_update
-from models.transaction import Transaction, Invoice
-from db import SessionDependency, create_db_and_tables
-from sqlmodel import select, update
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, APIRouter
+from models.customer import Customer, Customer_create, Customer_update
+from db import SessionDependency
+from sqlmodel import select
 
-app = FastAPI(lifespan=create_db_and_tables)
-
-#  This is a list of customers supposed to be a database
-db_customers: list[Customer] = []
+router = APIRouter(prefix="/customers", tags=["customers"])
 
 # Get methods ⬇️
 
-@app.get("/customers", response_model=list[Customer])
+@router.get("", response_model=list[Customer])
 async def list_customers(session: SessionDependency):
   return session.exec(select(Customer)).all()
   
-@app.get("/customers/{customer_id}", response_model=Customer)
+@router.get("/{customer_id}", response_model=Customer)
 async def get_customer_by_id(customer_id: int, session: SessionDependency):
   customer_db = session.get(Customer, customer_id)
   if not customer_db: 
@@ -25,7 +20,7 @@ async def get_customer_by_id(customer_id: int, session: SessionDependency):
 
 # Post methods ⬇️
 
-@app.post("/customers", response_model=Customer)
+@router.post("", response_model=Customer)
 async def create_customer(customer_data: Customer_create, session: SessionDependency): 
   # Validate the customer data using the Customer model, inside we pass a dictionary
   customer = Customer.model_validate(customer_data.model_dump())
@@ -34,16 +29,9 @@ async def create_customer(customer_data: Customer_create, session: SessionDepend
   session.refresh(customer)
   return customer
 
-@app.post("/transactions")
-async def create_transaction(transaction_data: Transaction):  
-  return transaction_data
-
-@app.post("/invoices")
-async def create_invoice(invoice_data: Invoice): 
-  return invoice_data
-
 # Patch methods ⬇️
-@app.patch("/customers/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED)
+
+@router.patch("/{customer_id}", response_model=Customer, status_code=status.HTTP_201_CREATED)
 async def update_customer(customer_id: int, customer: Customer_update, session: SessionDependency): 
   customer_db = session.get(Customer, customer_id)
   if not customer_db: 
@@ -57,7 +45,7 @@ async def update_customer(customer_id: int, customer: Customer_update, session: 
 
 # Delete methods ⬇️
 
-@app.delete("/customers/{customer_id}")
+@router.delete("/{customer_id}")
 async def delete_customer(customer_id: int, session: SessionDependency): 
   customer_db = session.get(Customer, customer_id)
   if not customer_db: 
