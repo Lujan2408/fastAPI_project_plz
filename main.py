@@ -3,6 +3,7 @@ from models.customer import Customer_create, Customer
 from models.transaction import Transaction, Invoice
 from db import SessionDependency, create_db_and_tables
 from sqlmodel import select
+from fastapi import HTTPException
 
 app = FastAPI(lifespan=create_db_and_tables)
 
@@ -16,9 +17,12 @@ async def list_customers(session: SessionDependency):
   return session.exec(select(Customer)).all()
   
 @app.get("/customers/{customer_id}", response_model=Customer)
-async def get_customer_by_id(id: int):
-  customer = next((customer for customer in db_customers if customer.id == id), None)
-  return customer
+async def get_customer_by_id(id: int, session: SessionDependency):
+  user_result = session.exec(select(Customer).where(Customer.id == id)).first()
+  if not user_result: 
+    raise HTTPException(status_code=404, detail="Customer not found or does not exist")
+  else: 
+    return user_result
 
 # Post methods ⬇️
 
