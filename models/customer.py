@@ -12,3 +12,9 @@ class Customer(CustomerBase, table=True):
 
 class Customer_create(CustomerBase):
   pass
+
+class Customer_update(CustomerBase): 
+  name: str | None = None
+  description: str | None = None
+  email: EmailStr | None = None
+  age: int | None = None
