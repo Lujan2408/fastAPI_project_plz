@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from models.transaction import Transaction, Invoice
 from db import create_db_and_tables
 from .routers.customers import router as customers_router
 from .routers.transactions import router as transactions_router

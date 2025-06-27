@@ -1,5 +1,9 @@
-from pydantic import BaseModel, EmailStr
-from sqlmodel import SQLModel, Field
+from pydantic import EmailStr
+from sqlmodel import SQLModel, Field, Relationship
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models.transaction import Transaction
 
 class CustomerBase(SQLModel):
   name: str 
@@ -9,6 +13,7 @@ class CustomerBase(SQLModel):
 
 class Customer(CustomerBase, table=True):
   id: int | None = Field(default=None, primary_key=True)
+  transactions: list["Transaction"] = Relationship(back_populates="customer")
 
 class Customer_create(CustomerBase):
   pass

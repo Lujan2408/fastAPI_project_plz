@@ -1,17 +1,17 @@
-from pydantic import BaseModel
-from models.customer import Customer
+from sqlmodel import Relationship, SQLModel, Field
+from typing import TYPE_CHECKING
 
-class Transaction(BaseModel): 
-  id: int
+if TYPE_CHECKING:
+    from models.customer import Customer
+
+class TransactionBase(SQLModel): 
   amount: int
   description: str
 
-class Invoice(BaseModel): 
-  id: int
-  customer: Customer
-  transactions: list[Transaction]
-  total_amount: int
+class Transaction(TransactionBase, table=True): 
+  id: int | None = Field(default=None, primary_key=True)
+  customer_id: int = Field(foreign_key="customer.id")
+  customer: "Customer" = Relationship(back_populates="transactions")
 
-  @property
-  def total_amount(self):
-    return sum(transaction.amount for transaction in self.transactions) 
+class Transaction_create(TransactionBase):
+  customer_id: int = Field(foreign_key="customer.id")
