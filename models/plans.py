@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from models.Customers.customer_plan import Customer_plan
 
 if TYPE_CHECKING: 
-  from models.customer import Customer
+  from models.Customers.customer import Customer
 
 class Plan(SQLModel, table=True):
   id: int | None = Field(default=None, primary_key=True)

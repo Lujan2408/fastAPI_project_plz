@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status, APIRouter
-from models.customer import Customer, Customer_create, Customer_update
+from models.Customers.customer import Customer, Customer_create, Customer_update
 from db import SessionDependency
 from sqlmodel import select
 

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models.customer import Customer
+from models.Customers.customer import Customer
 from models.transaction import Transaction
 
 class Invoice(BaseModel): 
@@ -10,4 +10,4 @@ class Invoice(BaseModel):
 
   @property
   def total_amount(self):
-    return sum(transaction.amount for transaction in self.transactions) 
+    return sum(transaction.amount for transaction in self.transactions)

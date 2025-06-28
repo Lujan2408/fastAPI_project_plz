@@ -2,7 +2,7 @@ from sqlmodel import Session, create_engine, SQLModel
 from typing import Annotated
 from fastapi import Depends, FastAPI
 
-from models.customer import Customer
+from models.Customers.customer import Customer
 from models.plans import Plan
 from models.transaction import Transaction
 from models.invoices import Invoice 

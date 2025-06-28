@@ -2,7 +2,7 @@ from sqlmodel import Relationship, SQLModel, Field
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from models.customer import Customer
+    from models.Customers.customer import Customer
 
 class TransactionBase(SQLModel): 
   amount: int
